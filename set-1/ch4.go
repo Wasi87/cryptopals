@@ -15,7 +15,8 @@ func DetectSingleCharXor(f string) []Result{
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		line := scanner.Text()
-		result := GetTopFiveScore(line)
+		bytes := []byte(line)
+		result := GetTopFiveScore(bytes)
 
 		results = append(results, result...)
 	}

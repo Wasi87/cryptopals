@@ -1,6 +1,6 @@
 package set1
 
-func RepeatingKeyXor(key string, input string) string {
+func RepeatingKeyXor(key string, input string) []byte {
 	keyBytes := []byte(key)
 	inputBytes := []byte(input)
 	var xorResults []byte
@@ -9,5 +9,5 @@ func RepeatingKeyXor(key string, input string) string {
 		xorResults = append(xorResults, xorResult)
 	}
 	
-	return BytesToHex(xorResults)
+	return xorResults
 }

@@ -10,6 +10,7 @@ type Pair struct {
 type Result struct {
 	Score     float64
 	XordString string
+	Key byte
 }
 
 type ResultSlice []Result
@@ -28,10 +29,8 @@ func (rs ResultSlice) Swap(i, j int) {
 
 // xor - str^所有單一字符 ? str^單一字符
 // 返回 map 對應ascii / xor結果
-func XorEverySingleChar(str string) []Pair {
-	bytes := HexToBytes(str)
+func XorEverySingleChar(bytes []byte) []Pair {
 	var decryptedPairs []Pair
-
 	for i := 0; i < 256; i++ {
 		var xordBytes []byte
 		for _, b := range bytes {
@@ -44,7 +43,7 @@ func XorEverySingleChar(str string) []Pair {
 }
 
 // https://en.wikipedia.org/wiki/Letter_frequency (sum 100.12%) 
-func score(p []Pair) []Result {
+func Score(p []Pair) []Result {
 	textsFrequency := map[byte]float64{
 		'a': 8.2,
 		'b': 1.5,
@@ -92,6 +91,7 @@ func score(p []Pair) []Result {
 		result = Result{
 			Score:      totalScore,
 			XordString: xordString,
+			Key: pair.Key,
 		}
 		results = append(results, result)
 	}
@@ -99,9 +99,9 @@ func score(p []Pair) []Result {
 	return results
 }
 
-func GetTopFiveScore(input string) []Result {
+func GetTopFiveScore(input []byte) []Result {
 	decryptedPairs := XorEverySingleChar(input)
-	results := score(decryptedPairs)
+	results := Score(decryptedPairs)
 	sort.Sort(ResultSlice(results))
 
 	return results[:5]
