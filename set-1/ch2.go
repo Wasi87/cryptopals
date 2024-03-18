@@ -2,7 +2,6 @@ package set1
 
 import (
 	"encoding/hex"
-	"fmt"
 	"log"
 )
 
@@ -19,18 +18,16 @@ func BytesToHex(bytes []byte) string {
 }
 
 // xor - 兩個string長度相等
-func Xor(str1, str2 string) (string, error) {
-	str1Bytes := HexToBytes(str1)
-	str2Bytes := HexToBytes(str2)
+func Xor(str1, str2 []byte) []byte {
 	if len(str1) != len(str2) {
-		return "", fmt.Errorf("input lengths are different")
+		panic("input lengths are different")
 	}
 
-	xordBytes := make([]byte, len(str1Bytes))
+	xord := make([]byte, len(str1))
 
-    for i := 0; i < len(str1Bytes); i++ {
-        xordBytes[i] = str1Bytes[i] ^ str2Bytes[i]
+    for i := 0; i < len(str1); i++ {
+        xord[i] = str1[i] ^ str2[i]
     }
 
-	return BytesToHex(xordBytes), nil
-} 
+	return xord
+}

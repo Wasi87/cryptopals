@@ -6,10 +6,10 @@ import (
 	"testing"
 )
 
-func TestAes128DecryptECB(t *testing.T) {
+func TestChal7(t *testing.T) {
 	key := "YELLOW SUBMARINE"
 	filePath := "texts/ch7.txt"
-	result, err := Aes128DecryptECB(key, filePath)
+	result, err := Chal7(key, filePath)
 	if err != nil{
 		log.Fatal(err)
 	}

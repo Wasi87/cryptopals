@@ -9,10 +9,6 @@ import (
 )
 
 
-func genKey(key string) []byte{
-	return []byte(key)
-}
-
 func ReadFile(filePath string) []byte {
 	content, err := os.ReadFile(filePath)
 	if err != nil{
@@ -30,7 +26,10 @@ func DecodeBase64(content []byte) []byte {
 }
 
 func AesDecryptECB(key, cipherText []byte) ([]byte, error) {
-	block, _ := aes.NewCipher(key)
+	block, err := aes.NewCipher(key)
+	if err != nil{
+		return nil, err
+	}
 
 	blockSize := block.BlockSize()
 	if len(cipherText)%blockSize != 0 {
@@ -44,14 +43,10 @@ func AesDecryptECB(key, cipherText []byte) ([]byte, error) {
 	return decrypted, nil
 }
 
-func Aes128DecryptECB(key, filePath string)(string, error){
-	keyBytes := genKey(key)
-	if len(keyBytes) != 16 {
-		log.Fatal("the length of key is not equal to 16")
-	}
+func Chal7(key, filePath string)(string, error){
 	content := ReadFile(filePath)
 	decodedContent := DecodeBase64(content)
-	decrypted, err := AesDecryptECB(keyBytes, decodedContent)
+	decrypted, err := AesDecryptECB([]byte(key), decodedContent)
 	if err != nil{
 		return "", err
 	}
