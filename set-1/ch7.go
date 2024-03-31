@@ -2,8 +2,8 @@ package set1
 
 import (
 	"crypto/aes"
+	"cryptopals/util"
 	"encoding/base64"
-	"fmt"
 	"log"
 	"os"
 )
@@ -25,31 +25,25 @@ func DecodeBase64(content []byte) []byte {
 	return decodedContent
 }
 
-func AesDecryptECB(key, cipherText []byte) ([]byte, error) {
+func AesDecryptECB(key, cipherText []byte) []byte {
 	block, err := aes.NewCipher(key)
-	if err != nil{
-		return nil, err
+	if err != nil {
+		panic(err)
 	}
-
 	blockSize := block.BlockSize()
-	if len(cipherText)%blockSize != 0 {
-		return nil, fmt.Errorf("ciphertext length is not a multiple of block size")
-	}
-	
+
 	decrypted := make([]byte, len(cipherText))
 	for i := 0; i < len(cipherText); i+=blockSize {
 		block.Decrypt(decrypted[i:i+blockSize], cipherText[i:i+blockSize])
 	}
-	return decrypted, nil
+	return util.PKCS7Unpad(decrypted)
 }
 
-func Chal7(key, filePath string)(string, error){
+
+func Chal7(key, filePath string) string {
 	content := ReadFile(filePath)
 	decodedContent := DecodeBase64(content)
-	decrypted, err := AesDecryptECB([]byte(key), decodedContent)
-	if err != nil{
-		return "", err
-	}
+	decrypted := AesDecryptECB([]byte(key), decodedContent)
 
-	return string(decrypted), nil
+	return string(decrypted)
 }

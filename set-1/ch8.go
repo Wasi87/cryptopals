@@ -11,7 +11,7 @@ import (
 )
 
 // bytes to chunk
-func bytesToChunks(line []byte, blockSize int) [][]byte {
+func BytesToChunks(line []byte, blockSize int) [][]byte {
 	chunks := make([][]byte, len(line)/blockSize)
 	for i := 0; i < len(line); i += blockSize {
 		end := i + blockSize
@@ -40,7 +40,7 @@ func DetectECB(filePath string)(int, int){
 		if err != nil{
 			log.Fatal(err)
 		}
-		chunks := bytesToChunks(decodedLine, blockSize)
+		chunks := BytesToChunks(decodedLine, blockSize)
 
 		for i := 0 ; i < len(chunks)-1 ; i++ {
 			count := 0

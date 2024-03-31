@@ -1,14 +1,8 @@
 package set2
 
-import (
-	"bytes"
-)
+import "cryptopals/util"
 
-func PKCS7Pad(text []byte, blockSize int) []byte {
-	// 餘 0 仍要填充一個完整的 block
-	padLen := blockSize - (len(text) % blockSize)
-	padding := bytes.Repeat([]byte{byte(padLen)}, padLen)
-	padded := append(text, padding...)
-	return padded
+func Chal9(text []byte, blockSize int) []byte {
+	return util.PKCS7Pad(text, blockSize)
 }
 

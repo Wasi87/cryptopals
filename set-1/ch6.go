@@ -62,7 +62,7 @@ func FindKeyLength(enc []byte) (int, float64) {
 }
 
 
-func Base64ToBinary(str string)([]byte, error){
+func Base64ToBytes(str string)([]byte, error){
 	binData, err := base64.StdEncoding.DecodeString(str)
 	if err != nil{
 		return nil, err
@@ -109,7 +109,7 @@ func BreakRepeatingXor(filePath string) ([]byte, []byte) {
 		log.Fatal(err)
 	}
 
-	encrypted, err := Base64ToBinary(string(data))
+	encrypted, err := Base64ToBytes(string(data))
 	if err != nil {
 		log.Fatal(err)
 	}
