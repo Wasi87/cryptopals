@@ -7,7 +7,7 @@ import (
 
 func TestChal10(t *testing.T){
 	key := "YELLOW SUBMARINE"
-	result := Chal10(key, "texts/ch10.txt", "\x00")
+	result := Chal10(key, "texts/ch10.txt", byte(0))
 	fmt.Printf("challenge 10 test: %s\n", result)
 }
 

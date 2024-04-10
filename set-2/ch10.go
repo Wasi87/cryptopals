@@ -8,16 +8,15 @@ import (
 	"cryptopals/util"
 )
 
-func Chal10(key, filePath, iv string) string {
+func Chal10(key, filePath string, iv byte) string {
 	content := set1.ReadFile(filePath)
 	decodedContent := set1.DecodeBase64(content)
-	ivByte := bytes.Repeat([]byte(iv), len(key))
-	dec := AesDecryptedCBC([]byte(key), decodedContent, ivByte)
+	dec := AesDecryptedCBC([]byte(key), decodedContent, iv)
 	return string(dec)
 }
 
 
-func AesDecryptedCBC(key, cipherText, iv []byte) []byte {
+func AesDecryptedCBC(key, cipherText []byte, iv byte) []byte {
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		panic(err)
@@ -27,7 +26,7 @@ func AesDecryptedCBC(key, cipherText, iv []byte) []byte {
 	undoKey := make([]byte, len(cipherText))
 	var undoXor []byte
 	
-	firstBlock := iv
+	firstBlock := bytes.Repeat([]byte{iv}, bs)
 	for i := 0; i < len(cipherText); i+=bs {
 		block.Decrypt(undoKey[i:i+bs],cipherText[i:i+bs])
 		undoXor = append(undoXor, set1.Xor(firstBlock, undoKey[i:i+bs])...)
@@ -37,7 +36,7 @@ func AesDecryptedCBC(key, cipherText, iv []byte) []byte {
 }
 
 
-func AesEncryptedCBC(key, plainText, iv []byte) []byte {
+func AesEncryptedCBC(key, plainText []byte, iv byte) []byte {
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		panic(err)
@@ -47,13 +46,11 @@ func AesEncryptedCBC(key, plainText, iv []byte) []byte {
 	plainText = util.PKCS7Pad(plainText, bs)
 	enc := make([]byte, len(plainText))
 
-	ivByte := bytes.Repeat([]byte(iv), bs)
-	firstBlock := ivByte
-	
+	prevBlock := bytes.Repeat([]byte{iv}, bs)
 	for i := 0; i < len(plainText); i+=bs {
-		xord := set1.Xor(firstBlock, plainText[i:i+bs])
+		xord := set1.Xor(prevBlock, plainText[i:i+bs])
 		block.Encrypt(enc[i:i+bs], xord)
-		firstBlock = enc[i:i+bs]
+		prevBlock = enc[i:i+bs]
 	}
 	return enc
 }

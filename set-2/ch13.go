@@ -12,8 +12,8 @@ import (
 var (
 	maxUID = 10
 	uidMutex sync.Mutex
-	once sync.Once
-	key []byte
+	once13 sync.Once
+	key13 []byte
 )
 
 func KvParser(input string) map[string]string {
@@ -69,13 +69,13 @@ func EncryptProfile(profile string, key []byte) []byte {
 
 
 func Chal13(email string) []byte {
-	once.Do(func(){ key = GenAESKey(16)})
-	encryptedProfile := EncryptProfile(ProfileEncode(ProfileFor(email)), key)
+	once13.Do(func(){ key13 = GenAESKey(16)})
+	encryptedProfile := EncryptProfile(ProfileEncode(ProfileFor(email)), key13)
 	return encryptedProfile
 }
 
 
 func BreakChal13(input []byte) map[string]string {
-	decrypted := set1.AesDecryptECB(key, input)
+	decrypted := set1.AesDecryptECB(key13, input)
 	return KvParser(string(decrypted))
 }

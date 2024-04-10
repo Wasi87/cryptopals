@@ -38,7 +38,7 @@ func Chal12()[]byte{
 	}
 
 	// check ECB mode
-	count := util.DetectECB(bytes.Repeat([]byte("A"), 144), bs)
+	count := util.DetectECB(Oracle(bytes.Repeat([]byte("A"), 144), key), bs)
 	if count == 0 {
 		panic("Not ECB mode")
 	}
@@ -49,35 +49,33 @@ func Chal12()[]byte{
 
 	// 換下一排
 	// 從15個A 偵測第二行 ＝ 15個A + 16已知 遍歷最後一位數
-	var bytesAns []byte
+	var ans []byte
 	for k := 0; k < len(Oracle([]byte{}, key)); k+=bs {
-		for i := 15; i >= 0; i-- {
+		for i := bs-1; i >= 0; i-- {
 			// 15~0
 			// 傳入15 - 15+0+1(最後一個遍歷)
 			// 傳入14 - 14+1+1(最後一個遍歷)
 			// 傳入0 - 0+15+1
 			
 			input := bytes.Repeat([]byte("A"), i)
-			enc := Oracle(input , key)
+			ct := Oracle(input , key)
 			
 			for j := 0; j < 255; j++ {
-				var inputGuess []byte
+				var guess []byte
 				if i > 0 {
-					inputGuess = bytes.Repeat([]byte("A"), i)
-					} 
-					if len(bytesAns) != 0 {
-						inputGuess = append(inputGuess, bytesAns...)
-					}
-					inputGuess = append(inputGuess, byte(j))			
-					encGuess := Oracle(inputGuess, key)
-					
-					if slices.Equal(enc[k:k+bs], encGuess[k:k+bs]) {
-						bytesAns = append(bytesAns, byte(j))
-						break
-					}
+					guess = bytes.Repeat([]byte("A"), i)
+				} 
+				if len(ans) != 0 {
+					guess = append(guess, ans...)
+				}
+				guess = append(guess, byte(j))			
+				ctGuess := Oracle(guess, key)
+				if slices.Equal(ct[k:k+bs], ctGuess[k:k+bs]) {
+					ans = append(ans, byte(j))
+					break
 				}
 			}
 		}
-
-	return bytesAns
+	}
+	return ans
 }

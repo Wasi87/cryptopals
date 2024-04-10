@@ -30,7 +30,7 @@ func EncryptionOracle(plainText []byte) ([]byte, int) {
 		encrypted = util.AesEncryptECB(key, plainText)
 	case 1:
 		fmt.Println("CBC mode")
-		encrypted = AesEncryptedCBC(key, plainText, []byte("\x00"))
+		encrypted = AesEncryptedCBC(key, plainText, byte(0))
 	}
 	return encrypted, mode
 }
